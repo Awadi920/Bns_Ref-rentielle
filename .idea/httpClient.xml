@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="HttpClientEndpointsTabState">
+    <option name="requestToText" value="&lt;CachedHttpClientTabRequests&gt;&#10;  &lt;entry key=&quot;ba4f149a9cf121505518aa6240167b6585172ef9&quot; value=&quot;###&amp;#10;PUT http://localhost:8044/codelists/update/{{codeListId}}&amp;#10;Content-Type: application/json&amp;#10;&amp;#10;{&amp;#10;  &amp;quot;codeList&amp;quot;: &amp;quot;&amp;quot;,&amp;#10;  &amp;quot;labelList&amp;quot;: &amp;quot;&amp;quot;,&amp;#10;  &amp;quot;description&amp;quot;: &amp;quot;&amp;quot;,&amp;#10;  &amp;quot;creationDate&amp;quot;: {},&amp;#10;  &amp;quot;domainCode&amp;quot;: &amp;quot;&amp;quot;,&amp;#10;  &amp;quot;codeCategory&amp;quot;: &amp;quot;&amp;quot;,&amp;#10;  &amp;quot;producerCode&amp;quot;: &amp;quot;&amp;quot;&amp;#10;}&quot; /&gt;&#10;&lt;/CachedHttpClientTabRequests&gt;" />
+  </component>
+</project>
