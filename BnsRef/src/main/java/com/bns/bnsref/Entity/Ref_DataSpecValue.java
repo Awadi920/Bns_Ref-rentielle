@@ -1,12 +1,10 @@
 package com.bns.bnsref.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.*;
 
 @Entity
 @Data
@@ -23,4 +21,13 @@ public class Ref_DataSpecValue implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Ref_DataSpec refDataSpec;
 
+    // relation with RefDataSpecValueTranslation 1 --> * bidirectional
+    @OneToMany(mappedBy = "refDataSpecValue", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<Ref_DataSpecValueTranslation> translations = new HashSet<>();
+
+    // Associer le Ref_DataValue
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "refDataValueAssocie") // Ajout de la relation
+    private Ref_DataValue refDataValue;
 }

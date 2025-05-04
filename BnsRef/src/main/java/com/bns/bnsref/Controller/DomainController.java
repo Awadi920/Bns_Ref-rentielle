@@ -1,10 +1,13 @@
 package com.bns.bnsref.Controller;
 
-import com.bns.bnsref.DTO.DomainDTO;
+import com.bns.bnsref.dao.DomainDAO;
+import com.bns.bnsref.dto.DomainDTO;
 import com.bns.bnsref.Service.DomainService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page; // Importation correcte
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +18,7 @@ import java.util.List;
 public class DomainController {
 
     private final DomainService domainService;
+    private final DomainDAO domainDAO;
 
     @PostMapping("/add")
     public ResponseEntity<DomainDTO> createDomain(@RequestBody DomainDTO domainDTO) {
@@ -42,4 +46,14 @@ public class DomainController {
     public ResponseEntity<List<DomainDTO>> getAllDomains() {
         return ResponseEntity.ok(domainService.getAllDomains());
     }
+
+
+    @GetMapping
+    public ResponseEntity<Page<DomainDTO>> getDomainsPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(domainService.getDomainsPaginated(page, size));
+    }
+
+
 }

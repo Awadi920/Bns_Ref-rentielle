@@ -1,27 +1,32 @@
 package com.bns.bnsref.ServiceImp;
 
-import com.bns.bnsref.DAO.CategoryDAO;
-import com.bns.bnsref.DAO.CodeListDAO;
-import com.bns.bnsref.DAO.DomainDAO;
-import com.bns.bnsref.DAO.ProducerDAO;
-import com.bns.bnsref.DTO.CodeListDTO;
+import com.bns.bnsref.Filter.Filter;
+import com.bns.bnsref.Filter.SortCriteria;
+import com.bns.bnsref.Filter.Specification.CodeListSpecification;
+import com.bns.bnsref.dao.*;
+import com.bns.bnsref.dto.CodeListDTO;
 import com.bns.bnsref.Entity.Category;
 import com.bns.bnsref.Entity.CodeList;
 import com.bns.bnsref.Entity.Domain;
 import com.bns.bnsref.Entity.Producer;
 import com.bns.bnsref.Mappers.CodeListMapper;
 import com.bns.bnsref.Service.CodeListService;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CodeListServiceImpl implements CodeListService {
+
+    private static final Logger logger = LoggerFactory.getLogger(CodeListServiceImpl.class);
+
 
     private final CodeListDAO codeListDAO;
     private final DomainDAO domainDAO;
@@ -29,6 +34,9 @@ public class CodeListServiceImpl implements CodeListService {
     private final ProducerDAO producerDAO;
 
     private final CodeListMapper codeListMapper;
+
+    private final FilterRepository filterRepository;
+    private final SortCriteriaRepository sortCriteriaRepository;
 
     @Override
     public CodeListDTO addCodeList(CodeListDTO codeListDTO) {
@@ -134,10 +142,33 @@ public class CodeListServiceImpl implements CodeListService {
 
     @Override
     public List<CodeListDTO> getAllCodeLists() {
-        List<CodeList> codeLists = codeListDAO.findAll();
+        List<CodeList> codeLists = codeListDAO.findAllWithRelations();
         return codeLists.stream()
                 .map(codeListMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CodeListDTO> getFilteredAndSortedCodeLists() {
+        List<Filter> filters = filterRepository.findByEntityName("CodeList");
+        List<SortCriteria> sortCriteria = sortCriteriaRepository.findByEntityName("CodeList");
+        logger.info("Retrieved {} filters for CodeList: {}", filters.size(), filters);
+        logger.info("Retrieved {} sort criteria for CodeList: {}", sortCriteria.size(), sortCriteria);
+
+        List<CodeList> codeLists;
+        if (filters.isEmpty() && sortCriteria.isEmpty()) {
+            logger.info("No filters or sort criteria, returning all CodeLists");
+            codeLists = codeListDAO.findAllWithRelations();
+        } else {
+            logger.info("Applying filters and/or sort criteria");
+            codeLists = codeListDAO.findAll(CodeListSpecification.applyFiltersAndSort(filters, sortCriteria));
+        }
+
+        logger.info("Found {} CodeLists after applying criteria", codeLists.size());
+        return codeLists.stream()
+                .map(codeListMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }

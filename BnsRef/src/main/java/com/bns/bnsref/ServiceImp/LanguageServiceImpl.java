@@ -1,7 +1,7 @@
 package com.bns.bnsref.ServiceImp;
 
-import com.bns.bnsref.DAO.LanguageDAO;
-import com.bns.bnsref.DTO.LanguageDTO;
+import com.bns.bnsref.dao.LanguageDAO;
+import com.bns.bnsref.dto.LanguageDTO;
 import com.bns.bnsref.Entity.Language;
 import com.bns.bnsref.Mappers.LanguageMapper;
 import com.bns.bnsref.Service.LanguageService;

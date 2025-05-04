@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
@@ -16,6 +15,7 @@ import java.util.Set;
 public class Ref_Data implements Serializable {
 
     @Id
+    @EqualsAndHashCode.Include // Ajout pour cohérence
     private String codeRefData;
     private String designation;
     private String description;
@@ -27,6 +27,11 @@ public class Ref_Data implements Serializable {
     @ToString.Exclude
     private Set<Ref_DataValue> refDataValues = new HashSet<>();
 
+
+    //  relation 1-->* with RefDataTranslation bidirectional
+    @OneToMany(mappedBy = "refData", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<Ref_DataTranslation> translations = new HashSet<>();
 
 }
 

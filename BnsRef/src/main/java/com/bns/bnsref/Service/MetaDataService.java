@@ -1,6 +1,6 @@
 package com.bns.bnsref.Service;
 
-import com.bns.bnsref.DTO.MetaDataDTO;
+import com.bns.bnsref.dto.MetaDataDTO;
 
 import java.util.*;
 

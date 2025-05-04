@@ -1,7 +1,7 @@
 package com.bns.bnsref.ServiceImp;
 
-import com.bns.bnsref.DAO.CategoryDAO;
-import com.bns.bnsref.DTO.CategoryDTO;
+import com.bns.bnsref.dao.CategoryDAO;
+import com.bns.bnsref.dto.CategoryDTO;
 import com.bns.bnsref.Entity.Category;
 
 import com.bns.bnsref.Mappers.CategoryMapper;
@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,22 +18,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryDAO categoryDAO;
     private final CategoryMapper categoryMapper;
-
-//    @Override
-//    public CategoryDTO addCategory(CategoryDTO categoryDTO) {
-//        // Vérifier si la Category existe déjà en fonction du code
-//        Optional<Category> existingCategory = categoryDAO.findById(categoryDTO.getCodeCategory());
-//        if (existingCategory.isPresent()) {
-//            throw new RuntimeException("Category déjà existante avec le code: " + categoryDTO.getCodeCategory());
-//        }
-//
-//        // Convertir le DTO en entité
-//        Category category = categoryMapper.toEntity(categoryDTO);
-//        categoryDAO.save(category); // Sauvegarder l'entité dans la base de données
-//
-//        // Retourner le DTO de la catégorie ajoutée
-//        return categoryMapper.toDTO(category);
-//    }
 
     @Override
     public CategoryDTO addCategory(CategoryDTO categoryDTO) {

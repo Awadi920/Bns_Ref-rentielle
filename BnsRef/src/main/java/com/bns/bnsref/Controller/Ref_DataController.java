@@ -1,12 +1,13 @@
 package com.bns.bnsref.Controller;
 
 
-import com.bns.bnsref.DTO.Ref_DataDTO;
+import com.bns.bnsref.dto.Ref_DataDTO;
 import com.bns.bnsref.Service.Ref_DataService;
 import com.bns.bnsref.Views.Views;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,8 +44,15 @@ public class Ref_DataController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('USER')")
     @JsonView(Views.Basic.class) // Exclut 'values'
     public List<Ref_DataDTO> getAllRefData() {
         return refDataService.getAllRefData();
+    }
+
+    @GetMapping("/filtered")
+    @JsonView(Views.Basic.class)
+    public List<Ref_DataDTO> getFilteredAndSortedRefData() {
+        return refDataService.getFilteredAndSortedRefData();
     }
 }

@@ -1,7 +1,7 @@
 package com.bns.bnsref.Controller;
 
 
-import com.bns.bnsref.DTO.ProducerDTO;
+import com.bns.bnsref.dto.ProducerDTO;
 import com.bns.bnsref.Service.ProducerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

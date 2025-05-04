@@ -1,7 +1,7 @@
 package com.bns.bnsref.Controller;
 
 
-import com.bns.bnsref.DTO.Ref_DataSpecDTO;
+import com.bns.bnsref.dto.Ref_DataSpecDTO;
 import com.bns.bnsref.Service.Ref_DataSpecService;
 import com.bns.bnsref.Views.Views;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -47,4 +47,14 @@ public class Ref_DataSpecController {
     public List<Ref_DataSpecDTO> getAllRefDataSpec() {
         return refDataSpecService.getAllRefDataSpec();
     }
+
+
+
+    @GetMapping("/filtered")
+    @JsonView(Views.Basic.class)
+    public ResponseEntity<List<Ref_DataSpecDTO>> getFilteredAndSortedRefDataSpec() {
+        return ResponseEntity.ok(refDataSpecService.getFilteredAndSortedRefDataSpec());
+    }
+
+
 }

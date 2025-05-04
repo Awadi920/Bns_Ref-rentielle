@@ -1,11 +1,12 @@
 package com.bns.bnsref.Controller;
 
-import com.bns.bnsref.DAO.*;
-import com.bns.bnsref.DTO.CodeListDTO;
+import com.bns.bnsref.dao.*;
+import com.bns.bnsref.dto.CodeListDTO;
 import com.bns.bnsref.Service.CodeListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -15,18 +16,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/codelists")
 @RequiredArgsConstructor
+//@CrossOrigin("*")
 public class CodeListController {
 
     @Autowired
     private final CodeListService codeListService;
-    @Autowired
-    private final CodeListDAO codeListDAO;
-    @Autowired
-    private final DomainDAO domainDAO;
-    @Autowired
-    private final CategoryDAO categoryDAO;
-    @Autowired
-    private final ProducerDAO producerDAO;
 
 
     @PostMapping("/add")
@@ -51,8 +45,16 @@ public class CodeListController {
     }
 
     @GetMapping("/all")
+   // @PreAuthorize("hasAuthority('USER')")
+   @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<CodeListDTO>> getAllCodeLists() {
         return ResponseEntity.ok(codeListService.getAllCodeLists());
     }
+
+    @GetMapping("/filtered")
+    public ResponseEntity<List<CodeListDTO>> getFilteredAndSortedCodeLists() {
+        return ResponseEntity.ok(codeListService.getFilteredAndSortedCodeLists());
+    }
+
 
 }

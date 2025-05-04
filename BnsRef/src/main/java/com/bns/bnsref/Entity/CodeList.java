@@ -1,13 +1,12 @@
 package com.bns.bnsref.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
@@ -43,12 +42,12 @@ public class CodeList implements Serializable {
     private Producer producer;
 
     // relation 1-->* with Refdata bidirectional
-    @OneToMany(mappedBy = "codeList",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @ToString.Exclude // Ajoutez ceci
-    private Set<Ref_Data> refData = new HashSet<>();;
+    @OneToMany(mappedBy = "codeList", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<Ref_Data> refData = new HashSet<>();
 
     // relation 1-->* with RefDataSpec bidirectional
-    @OneToMany(mappedBy = "codeList", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "codeList", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @ToString.Exclude
     private Set<Ref_DataSpec> refDataSpec = new HashSet<>();
 
@@ -56,6 +55,25 @@ public class CodeList implements Serializable {
     @OneToMany(mappedBy = "codeList", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @ToString.Exclude
     private Set<MetaData> metaData = new HashSet<>();
+
+
+    // relation 1-->* with CodeListTranslation bidirectional
+    @OneToMany(mappedBy = "codeList", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<CodeListTranslation> translations = new HashSet<>();
+
+
+    // relation 1-->* with ListCodeRelation bidirectional
+    @OneToMany(mappedBy = "codeListSource", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JsonIgnore
+    private Set<ListCodeRelation> sourceRelations = new HashSet<>();
+
+    @OneToMany(mappedBy = "codeListCible", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JsonIgnore
+    private Set<ListCodeRelation> targetRelations = new HashSet<>();
+
 
     @PrePersist
     public void prePersist() {

@@ -1,8 +1,8 @@
 package com.bns.bnsref.ServiceImp;
 
-import com.bns.bnsref.DAO.CodeListDAO;
-import com.bns.bnsref.DAO.MetaDataDAO;
-import com.bns.bnsref.DTO.MetaDataDTO;
+import com.bns.bnsref.dao.CodeListDAO;
+import com.bns.bnsref.dao.MetaDataDAO;
+import com.bns.bnsref.dto.MetaDataDTO;
 import com.bns.bnsref.Entity.CodeList;
 import com.bns.bnsref.Entity.MetaData;
 import com.bns.bnsref.Mappers.MetaDataMapper;

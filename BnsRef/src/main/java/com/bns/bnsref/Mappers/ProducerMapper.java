@@ -1,6 +1,6 @@
 package com.bns.bnsref.Mappers;
 
-import com.bns.bnsref.DTO.ProducerDTO;
+import com.bns.bnsref.dto.ProducerDTO;
 import com.bns.bnsref.Entity.Producer;
 import org.springframework.stereotype.Component;
 
@@ -30,4 +30,12 @@ public class ProducerMapper {
                 .build();
     }
 }
+
+//@Mapper(componentModel = "spring")
+//public interface ProducerMapper {
+//
+//    Producer toEntity(ProducerDTO dto);
+//
+//    ProducerDTO toDTO(Producer entity);
+//}
 

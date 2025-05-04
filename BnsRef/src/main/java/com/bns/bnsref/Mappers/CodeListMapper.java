@@ -1,14 +1,12 @@
 package com.bns.bnsref.Mappers;
 
 
-import com.bns.bnsref.DTO.CodeListDTO;
+import com.bns.bnsref.dto.CodeListDTO;
 import com.bns.bnsref.Entity.Category;
 import com.bns.bnsref.Entity.CodeList;
 import com.bns.bnsref.Entity.Domain;
 import com.bns.bnsref.Entity.Producer;
 import org.springframework.stereotype.Component;
-
-import java.time.format.DateTimeFormatter;
 
 @Component
 public class CodeListMapper {

@@ -1,7 +1,7 @@
 package com.bns.bnsref.ServiceImp;
 
-import com.bns.bnsref.DAO.ProducerDAO;
-import com.bns.bnsref.DTO.ProducerDTO;
+import com.bns.bnsref.dao.ProducerDAO;
+import com.bns.bnsref.dto.ProducerDTO;
 import com.bns.bnsref.Entity.Producer;
 import com.bns.bnsref.Mappers.ProducerMapper;
 import com.bns.bnsref.Service.ProducerService;
@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

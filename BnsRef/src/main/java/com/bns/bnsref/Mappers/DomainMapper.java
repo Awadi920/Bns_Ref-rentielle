@@ -1,6 +1,6 @@
 package com.bns.bnsref.Mappers;
 
-import com.bns.bnsref.DTO.DomainDTO;
+import com.bns.bnsref.dto.DomainDTO;
 import com.bns.bnsref.Entity.Domain;
 import org.springframework.stereotype.Component;
 

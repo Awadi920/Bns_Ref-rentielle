@@ -1,6 +1,6 @@
 package com.bns.bnsref.Service;
 
-import com.bns.bnsref.DTO.CategoryDTO;
+import com.bns.bnsref.dto.CategoryDTO;
 
 import java.util.*;
 

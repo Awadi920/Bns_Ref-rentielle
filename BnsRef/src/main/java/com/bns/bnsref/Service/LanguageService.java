@@ -1,6 +1,6 @@
 package com.bns.bnsref.Service;
 
-import com.bns.bnsref.DTO.LanguageDTO;
+import com.bns.bnsref.dto.LanguageDTO;
 
 import java.util.*;
 

@@ -1,6 +1,6 @@
 package com.bns.bnsref.Controller;
 
-import com.bns.bnsref.DTO.LanguageDTO;
+import com.bns.bnsref.dto.LanguageDTO;
 import com.bns.bnsref.Service.LanguageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

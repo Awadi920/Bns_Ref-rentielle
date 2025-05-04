@@ -4,10 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
@@ -29,4 +26,7 @@ public class Ref_DataSpec implements Serializable {
     @Builder.Default // Lombok: initialise la collection
     private List<Ref_DataSpecValue> refDataSpecValues = new ArrayList<>();
 
+    @OneToMany(mappedBy = "refDataSpec", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<Ref_DataSpecTranslation> translations = new HashSet<>();
 }

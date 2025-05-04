@@ -1,15 +1,22 @@
 package com.bns.bnsref.ServiceImp;
 
-import com.bns.bnsref.DAO.DomainDAO;
-import com.bns.bnsref.DTO.DomainDTO;
+import com.bns.bnsref.dao.DomainDAO;
+import com.bns.bnsref.dto.DomainDTO;
 import com.bns.bnsref.Entity.Domain;
 import com.bns.bnsref.Mappers.DomainMapper;
 import com.bns.bnsref.Service.DomainService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+
+
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,6 +68,14 @@ public class DomainServiceImpl implements DomainService {
     @Override
     public List<DomainDTO> getAllDomains() {
         return domainDAO.findAll().stream().map(domainMapper::toDTO).collect(Collectors.toList());
+    }
+
+    // Méthode pour pagination
+    @Override
+    public Page<DomainDTO> getDomainsPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Domain> domainPage = domainDAO.findAll(pageable);
+        return domainPage.map(domainMapper::toDTO);
     }
 }
 

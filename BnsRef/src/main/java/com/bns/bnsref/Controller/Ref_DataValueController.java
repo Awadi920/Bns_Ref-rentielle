@@ -1,7 +1,7 @@
 package com.bns.bnsref.Controller;
 
 
-import com.bns.bnsref.DTO.Ref_DataValueDTO;
+import com.bns.bnsref.dto.Ref_DataValueDTO;
 import com.bns.bnsref.Service.Ref_DataValueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +28,16 @@ public class Ref_DataValueController {
         return ResponseEntity.ok(updatedRefDataValue);
     }
 
+//    @DeleteMapping("/delete/{codeRefDataValue}")
+//    public ResponseEntity<Void> deleteRefDataValue(@PathVariable String codeRefDataValue) {
+//        refDataValueService.deleteRefDataValue(codeRefDataValue);
+//        return ResponseEntity.noContent().build();
+//    }
+
     @DeleteMapping("/delete/{codeRefDataValue}")
-    public ResponseEntity<Void> deleteRefDataValue(@PathVariable String codeRefDataValue) {
+    public ResponseEntity<String> deleteRefDataValue(@PathVariable String codeRefDataValue) {
         refDataValueService.deleteRefDataValue(codeRefDataValue);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Ref_DataValue and associated children deleted successfully!");
     }
 
     @GetMapping("/{codeRefDataValue}")
@@ -44,5 +50,11 @@ public class Ref_DataValueController {
     public ResponseEntity<List<Ref_DataValueDTO>> getAllRefDataValues() {
         List<Ref_DataValueDTO> refDataValueList = refDataValueService.getAllRefDataValues();
         return ResponseEntity.ok(refDataValueList);
+    }
+
+    @PostMapping("/assign-relation")
+    public ResponseEntity<Ref_DataValueDTO> assignRelation(@RequestBody Ref_DataValueDTO dto) {
+        Ref_DataValueDTO updated = refDataValueService.assignRelation(dto);
+        return ResponseEntity.ok(updated);
     }
 }

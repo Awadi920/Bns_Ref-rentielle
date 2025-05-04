@@ -1,10 +1,8 @@
 package com.bns.bnsref.Controller;
 
-import com.bns.bnsref.DTO.MetaDataDTO;
-import com.bns.bnsref.Entity.MetaData;
+import com.bns.bnsref.dto.MetaDataDTO;
 import com.bns.bnsref.Service.MetaDataService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

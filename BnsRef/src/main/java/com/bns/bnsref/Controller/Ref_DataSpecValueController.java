@@ -1,7 +1,7 @@
 package com.bns.bnsref.Controller;
 
 
-import com.bns.bnsref.DTO.Ref_DataSpecValueDTO;
+import com.bns.bnsref.dto.Ref_DataSpecValueDTO;
 import com.bns.bnsref.Service.Ref_DataSpecValueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

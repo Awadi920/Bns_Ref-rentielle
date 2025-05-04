@@ -1,13 +1,21 @@
 package com.bns.bnsref.ServiceImp;
 
-import com.bns.bnsref.DAO.CodeListDAO;
-import com.bns.bnsref.DAO.Ref_DataSpecDAO;
-import com.bns.bnsref.DTO.Ref_DataSpecDTO;
+import com.bns.bnsref.Filter.Filter;
+import com.bns.bnsref.Filter.SortCriteria;
+import com.bns.bnsref.Filter.Specification.Ref_DataSpecSpecification;
+import com.bns.bnsref.dao.CodeListDAO;
+import com.bns.bnsref.dao.FilterRepository;
+import com.bns.bnsref.dao.Ref_DataSpecDAO;
+import com.bns.bnsref.dao.SortCriteriaRepository;
+import com.bns.bnsref.dto.Ref_DataSpecDTO;
 import com.bns.bnsref.Entity.CodeList;
 import com.bns.bnsref.Entity.Ref_DataSpec;
 import com.bns.bnsref.Mappers.Ref_DataSpecMapper;
 import com.bns.bnsref.Service.Ref_DataSpecService;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,10 +25,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class Ref_DataSpecServiceImpl implements Ref_DataSpecService {
 
+    private static final Logger logger = LoggerFactory.getLogger(Ref_DataSpecServiceImpl.class);
+
+
     private final Ref_DataSpecDAO refDataSpecDAO;
     private final Ref_DataSpecMapper refDataSpecMapper;
     private final CodeListDAO codeListDAO;
 
+    private final FilterRepository filterRepository;
+    private final SortCriteriaRepository sortCriteriaRepository;
     @Override
     public Ref_DataSpecDTO addRefDataSpec(Ref_DataSpecDTO refDataSpecDTO) {
         // Vérifier si le CodeList existe
@@ -73,6 +86,29 @@ public class Ref_DataSpecServiceImpl implements Ref_DataSpecService {
     @Override
     public List<Ref_DataSpecDTO> getAllRefDataSpec() {
         return refDataSpecDAO.findAll().stream()
+                .map(refDataSpecMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Ref_DataSpecDTO> getFilteredAndSortedRefDataSpec() {
+        List<Filter> filters = filterRepository.findByEntityName("Ref_DataSpec");
+        List<SortCriteria> sortCriteria = sortCriteriaRepository.findByEntityName("Ref_DataSpec");
+        logger.info("Retrieved {} filters for Ref_DataSpec: {}", filters.size(), filters);
+        logger.info("Retrieved {} sort criteria for Ref_DataSpec: {}", sortCriteria.size(), sortCriteria);
+
+        List<Ref_DataSpec> refDataSpecs;
+        if (filters.isEmpty() && sortCriteria.isEmpty()) {
+            logger.info("No filters or sort criteria, returning all Ref_DataSpec");
+            refDataSpecs = refDataSpecDAO.findAll();
+        } else {
+            logger.info("Applying filters and/or sort criteria");
+            refDataSpecs = refDataSpecDAO.findAll(Ref_DataSpecSpecification.applyFiltersAndSort(filters, sortCriteria));
+        }
+
+        logger.info("Found {} Ref_DataSpec after applying criteria", refDataSpecs.size());
+        return refDataSpecs.stream()
                 .map(refDataSpecMapper::toDTO)
                 .collect(Collectors.toList());
     }

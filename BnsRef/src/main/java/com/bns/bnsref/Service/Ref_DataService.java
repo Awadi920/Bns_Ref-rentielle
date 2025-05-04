@@ -1,6 +1,6 @@
 package com.bns.bnsref.Service;
 
-import com.bns.bnsref.DTO.Ref_DataDTO;
+import com.bns.bnsref.dto.Ref_DataDTO;
 
 import java.util.*;
 
@@ -10,4 +10,7 @@ public interface Ref_DataService {
     void deleteRefData(String codeRefData);
     Ref_DataDTO getRefDataById(String codeRefData);
     List<Ref_DataDTO> getAllRefData();
+    List<Ref_DataDTO> getFilteredAndSortedRefData();
+
 }
+

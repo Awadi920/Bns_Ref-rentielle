@@ -1,9 +1,8 @@
 package com.bns.bnsref.Mappers;
 
-import com.bns.bnsref.DTO.MetaDataDTO;
+import com.bns.bnsref.dto.MetaDataDTO;
 import com.bns.bnsref.Entity.CodeList;
 import com.bns.bnsref.Entity.MetaData;
-import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 @Component

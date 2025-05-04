@@ -1,6 +1,6 @@
 package com.bns.bnsref.Mappers;
 
-import com.bns.bnsref.DTO.LanguageDTO;
+import com.bns.bnsref.dto.LanguageDTO;
 import com.bns.bnsref.Entity.Language;
 import org.springframework.stereotype.Component;
 

@@ -1,6 +1,6 @@
 package com.bns.bnsref.Service;
 
-import com.bns.bnsref.DTO.Ref_DataValueDTO;
+import com.bns.bnsref.dto.Ref_DataValueDTO;
 
 import java.util.*;
 
@@ -10,4 +10,8 @@ public interface Ref_DataValueService {
     void deleteRefDataValue(String codeRefDataValue);
     Ref_DataValueDTO getRefDataValueById(String codeRefDataValue);
     List<Ref_DataValueDTO> getAllRefDataValues();
+
+    Ref_DataValueDTO assignRelation(Ref_DataValueDTO refDataValueDTO); // Nouvelle méthode
+
+
 }

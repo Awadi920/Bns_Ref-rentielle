@@ -1,6 +1,7 @@
 package com.bns.bnsref.Service;
 
-import com.bns.bnsref.DTO.DomainDTO;
+import com.bns.bnsref.dto.DomainDTO;
+import org.springframework.data.domain.Page;
 
 import java.util.*;
 
@@ -10,5 +11,6 @@ public interface DomainService {
     void deleteDomain(String codeDomain);
     DomainDTO getDomainById(String codeDomain);
     List<DomainDTO> getAllDomains();
+    Page<DomainDTO> getDomainsPaginated(int page, int size);
 }
 

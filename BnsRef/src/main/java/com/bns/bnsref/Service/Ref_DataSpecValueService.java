@@ -1,6 +1,6 @@
 package com.bns.bnsref.Service;
 
-import com.bns.bnsref.DTO.Ref_DataSpecValueDTO;
+import com.bns.bnsref.dto.Ref_DataSpecValueDTO;
 
 import java.util.*;
 
