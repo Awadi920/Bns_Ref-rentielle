@@ -21,6 +21,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 @Service
 @RequiredArgsConstructor
 public class CodeListServiceImpl implements CodeListService {
@@ -140,13 +144,21 @@ public class CodeListServiceImpl implements CodeListService {
         return codeListMapper.toDTO(codeList);
     }
 
+//    @Override
+//    public List<CodeListDTO> getAllCodeLists() {
+//        List<CodeList> codeLists = codeListDAO.findAllWithRelations();
+//        return codeLists.stream()
+//                .map(codeListMapper::toDTO)
+//                .collect(Collectors.toList());
+//    }
+
     @Override
-    public List<CodeListDTO> getAllCodeLists() {
-        List<CodeList> codeLists = codeListDAO.findAllWithRelations();
-        return codeLists.stream()
-                .map(codeListMapper::toDTO)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Page<CodeListDTO> getAllCodeLists(Pageable pageable) {
+        Page<CodeList> codeListPage = codeListDAO.findAll(pageable);
+        return codeListPage.map(codeListMapper::toDTO);
     }
+
 
 
     @Override

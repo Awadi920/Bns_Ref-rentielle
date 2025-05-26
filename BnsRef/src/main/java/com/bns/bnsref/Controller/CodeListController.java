@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 
@@ -34,9 +36,9 @@ public class CodeListController {
     }
 
     @DeleteMapping("/delete/{codeListId}")
-    public ResponseEntity<String> deleteCodeList(@PathVariable String codeListId) {
+    public ResponseEntity<Void> deleteCodeList(@PathVariable String codeListId) {
         codeListService.deleteCodeList(codeListId);
-        return ResponseEntity.ok("CodeList and associated entities deleted successfully!");
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{codeListId}")
@@ -44,11 +46,20 @@ public class CodeListController {
         return ResponseEntity.ok(codeListService.getCodeListById(codeListId));
     }
 
+//    @GetMapping("/all")
+//   // @PreAuthorize("hasAuthority('USER')")
+//   @PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<List<CodeListDTO>> getAllCodeLists() {
+//        return ResponseEntity.ok(codeListService.getAllCodeLists());
+//    }
+
     @GetMapping("/all")
-   // @PreAuthorize("hasAuthority('USER')")
-   @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<CodeListDTO>> getAllCodeLists() {
-        return ResponseEntity.ok(codeListService.getAllCodeLists());
+    //@PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<CodeListDTO>> getAllCodeLists(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(codeListService.getAllCodeLists(pageable));
     }
 
     @GetMapping("/filtered")

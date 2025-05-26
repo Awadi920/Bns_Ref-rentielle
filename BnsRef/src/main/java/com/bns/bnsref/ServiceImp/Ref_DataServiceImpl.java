@@ -4,6 +4,7 @@ package com.bns.bnsref.ServiceImp;
 import com.bns.bnsref.Filter.Filter;
 import com.bns.bnsref.Filter.SortCriteria;
 import com.bns.bnsref.Filter.Specification.Ref_DataSpecification;
+import com.bns.bnsref.Views.Views;
 import com.bns.bnsref.dao.CodeListDAO;
 import com.bns.bnsref.dao.FilterRepository;
 import com.bns.bnsref.dao.Ref_DataDAO;
@@ -13,10 +14,17 @@ import com.bns.bnsref.Entity.CodeList;
 import com.bns.bnsref.Entity.Ref_Data;
 import com.bns.bnsref.Mappers.Ref_DataMapper;
 import com.bns.bnsref.Service.Ref_DataService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +39,7 @@ public class Ref_DataServiceImpl implements Ref_DataService {
     private final Ref_DataDAO refDataDAO;
     private final Ref_DataMapper refDataMapper;
     private final CodeListDAO codeListDAO;
+    private final ObjectMapper objectMapper; // Add ObjectMapper
 
     private final FilterRepository filterRepository;
     private final SortCriteriaRepository sortCriteriaRepository;
@@ -87,12 +96,24 @@ public class Ref_DataServiceImpl implements Ref_DataService {
                 .orElseThrow(() -> new RuntimeException("Ref_Data not found")));
     }
 
+//    @Override
+//    public List<Ref_DataDTO> getAllRefData() {
+//        return refDataDAO.findAll().stream()
+//                .map(refDataMapper::toDTO)
+//                .collect(Collectors.toList());
+//    }
+
     @Override
-    public List<Ref_DataDTO> getAllRefData() {
-        return refDataDAO.findAll().stream()
-                .map(refDataMapper::toDTO)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Page<Ref_DataDTO> getAllRefData(Pageable pageable) {
+        Page<Ref_Data> refDataPage = refDataDAO.findAll(pageable);
+        Page<Ref_DataDTO> dtoPage = refDataPage.map(refData -> {
+            Ref_DataDTO dto = refDataMapper.toBasicDTO(refData); // Use toBasicDTO
+            return dto;
+        });
+        return dtoPage;
     }
+
 
     @Override
     public List<Ref_DataDTO> getFilteredAndSortedRefData() {

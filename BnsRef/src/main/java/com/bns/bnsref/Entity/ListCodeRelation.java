@@ -32,9 +32,8 @@ public class ListCodeRelation implements Serializable {
     private CodeList codeListCible;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_relation", nullable = false, referencedColumnName = "code") // Référencer la colonne "code"
-    @ToString.Exclude // Ajouté pour éviter la récursion
-
+    @JoinColumn(name = "type_relation", nullable = false, referencedColumnName = "code")
+    @ToString.Exclude
     private TypeRelation typeRelation;
 
 }

@@ -9,6 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 @RestController
@@ -42,12 +46,19 @@ public class Ref_DataSpecController {
         return ResponseEntity.ok(refDataSpecDTO);
     }
 
-    @GetMapping("/all")
-    @JsonView(Views.Basic.class) // Exclut 'specValues'
-    public List<Ref_DataSpecDTO> getAllRefDataSpec() {
-        return refDataSpecService.getAllRefDataSpec();
-    }
+//    @GetMapping("/all")
+//    @JsonView(Views.Basic.class) // Exclut 'specValues'
+//    public List<Ref_DataSpecDTO> getAllRefDataSpec() {
+//        return refDataSpecService.getAllRefDataSpec();
+//    }
 
+    @GetMapping("/all")
+    public ResponseEntity<Page<Ref_DataSpecDTO>> getAllRefDataSpec(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(refDataSpecService.getAllRefDataSpec(pageable));
+    }
 
 
     @GetMapping("/filtered")

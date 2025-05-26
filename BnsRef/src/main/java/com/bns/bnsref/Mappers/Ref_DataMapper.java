@@ -8,6 +8,7 @@ import com.bns.bnsref.Entity.Ref_Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +33,20 @@ public class Ref_DataMapper {
                 .collect(Collectors.toList()));
 
         return dto;
+    }
+
+    // New method for Basic view (excludes values and translations)
+    public Ref_DataDTO toBasicDTO(Ref_Data entity) {
+        if (entity == null) return null;
+
+        return Ref_DataDTO.builder()
+                .codeRefData(entity.getCodeRefData())
+                .designation(entity.getDesignation())
+                .description(entity.getDescription())
+                .codeListCode(entity.getCodeList() != null ? entity.getCodeList().getCodeList() : null)
+                .values(new ArrayList<>()) // Empty list to match DTO structure
+                .translations(new ArrayList<>()) // Empty list to match DTO structure
+                .build();
     }
 
     public Ref_Data toEntity(Ref_DataDTO dto) {

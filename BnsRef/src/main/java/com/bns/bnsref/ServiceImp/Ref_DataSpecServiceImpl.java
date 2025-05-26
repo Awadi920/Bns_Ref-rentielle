@@ -18,6 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +37,8 @@ public class Ref_DataSpecServiceImpl implements Ref_DataSpecService {
 
     private final FilterRepository filterRepository;
     private final SortCriteriaRepository sortCriteriaRepository;
+
+
     @Override
     public Ref_DataSpecDTO addRefDataSpec(Ref_DataSpecDTO refDataSpecDTO) {
         // Vérifier si le CodeList existe
@@ -83,11 +88,18 @@ public class Ref_DataSpecServiceImpl implements Ref_DataSpecService {
                 .orElseThrow(() -> new RuntimeException("Ref_DataSpec not found")));
     }
 
+//    @Override
+//    public List<Ref_DataSpecDTO> getAllRefDataSpec() {
+//        return refDataSpecDAO.findAll().stream()
+//                .map(refDataSpecMapper::toDTO)
+//                .collect(Collectors.toList());
+//    }
+
     @Override
-    public List<Ref_DataSpecDTO> getAllRefDataSpec() {
-        return refDataSpecDAO.findAll().stream()
-                .map(refDataSpecMapper::toDTO)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Page<Ref_DataSpecDTO> getAllRefDataSpec(Pageable pageable) {
+        Page<Ref_DataSpec> refDataSpecPage = refDataSpecDAO.findAll(pageable);
+        return refDataSpecPage.map(refDataSpecMapper::toBasicDTO); // Use toBasicDTO
     }
 
     @Override
