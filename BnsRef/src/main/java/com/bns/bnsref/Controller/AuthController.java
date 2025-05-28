@@ -10,6 +10,8 @@ import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -58,5 +60,13 @@ public class AuthController {
             return ResponseEntity.status(500).body("Erreur lors de la déconnexion : " + e.getMessage());
         }
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AccessTokenResponse> refresh(@RequestBody Map<String, String> body) {
+        String refreshToken = body.get("refreshToken");
+        AccessTokenResponse response = keycloakService.refreshToken(refreshToken);
+        return ResponseEntity.ok(response);
+    }
+
 }
 

@@ -170,4 +170,31 @@ public class KeycloakService {
             throw new RuntimeException("Erreur lors de la recherche de l'utilisateur : " + e.getMessage());
         }
     }
+
+    public AccessTokenResponse refreshToken(String refreshToken) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String tokenEndpoint = serverUrl + "/realms/" + realm + "/protocol/openid-connect/token";
+
+            // Préparer le corps de la requête
+            MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+            requestBody.add("grant_type", "refresh_token");
+            requestBody.add("client_id", clientId);
+            requestBody.add("client_secret", clientSecret);
+            requestBody.add("refresh_token", refreshToken);
+
+            // Configurer les en-têtes
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            // Créer la requête
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(requestBody, headers);
+
+            // Appeler l'endpoint de token
+            return restTemplate.postForObject(tokenEndpoint, request, AccessTokenResponse.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors du rafraîchissement du token : " + e.getMessage());
+        }
+    }
+
 }

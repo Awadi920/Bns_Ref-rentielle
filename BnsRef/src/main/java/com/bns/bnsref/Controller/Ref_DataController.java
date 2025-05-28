@@ -8,6 +8,7 @@ import com.bns.bnsref.Views.Views;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,17 +25,17 @@ public class Ref_DataController {
 
     private final Ref_DataService refDataService;
 
-//    @PostMapping("/add")
-//    public ResponseEntity<Ref_DataDTO> addRefData(@RequestBody Ref_DataDTO refDataDTO) {
-//        Ref_DataDTO createdRefData = refDataService.addRefData(refDataDTO);
-//        return ResponseEntity.status(201).body(createdRefData);
-//    }
-
     @PostMapping("/add")
-    public ResponseEntity<Void> addRefData(@RequestBody Ref_DataDTO refDataDTO) {
-        refDataService.addRefData(refDataDTO);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Ref_DataDTO> addRefData(@RequestBody Ref_DataDTO refDataDTO) {
+        Ref_DataDTO createdRefData = refDataService.addRefData(refDataDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdRefData);
     }
+
+//    @PostMapping("/add")
+//    public ResponseEntity<Void> addRefData(@RequestBody Ref_DataDTO refDataDTO) {
+//        refDataService.addRefData(refDataDTO);
+//        return ResponseEntity.noContent().build();
+//    }
 
     @PutMapping("/update/{codeRefData}")
     public ResponseEntity<Ref_DataDTO> updateRefData(@PathVariable String codeRefData, @RequestBody Ref_DataDTO refDataDTO) {

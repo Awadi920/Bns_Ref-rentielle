@@ -45,6 +45,29 @@ public class Ref_DataServiceImpl implements Ref_DataService {
     private final SortCriteriaRepository sortCriteriaRepository;
 
 
+//    @Override
+//    public Ref_DataDTO addRefData(Ref_DataDTO refDataDTO) {
+//        // Vérifier si le CodeList existe
+//        CodeList codeList = codeListDAO.findById(refDataDTO.getCodeListCode())
+//                .orElseThrow(() -> new RuntimeException("CodeList not found with code: " + refDataDTO.getCodeListCode()));
+//
+//        // Générer automatiquement le codeRefData
+//        String lastCodeRefData = refDataDAO.findLastRefDataCode().orElse("REFD000");
+//        int nextId = Integer.parseInt(lastCodeRefData.replace("REFD", "")) + 1;
+//        String newCodeRefData = String.format("REFD%03d", nextId); // Format REFD001, REFD002...
+//
+//        // Convertir le DTO en entité
+//        Ref_Data refData = refDataMapper.toEntity(refDataDTO);
+//        refData.setCodeRefData(newCodeRefData);
+//        refData.setCodeList(codeList); // Associer le CodeList
+//
+//        // Sauvegarder l'entité
+//        Ref_Data savedRefData = refDataDAO.save(refData);
+//
+//        // Retourner le DTO
+//        return refDataMapper.toDTO(savedRefData);
+//    }
+
     @Override
     public Ref_DataDTO addRefData(Ref_DataDTO refDataDTO) {
         // Vérifier si le CodeList existe
@@ -64,8 +87,8 @@ public class Ref_DataServiceImpl implements Ref_DataService {
         // Sauvegarder l'entité
         Ref_Data savedRefData = refDataDAO.save(refData);
 
-        // Retourner le DTO
-        return refDataMapper.toDTO(savedRefData);
+        // Retourner le DTO sans charger les collections lazy
+        return refDataMapper.toBasicDTO(savedRefData);
     }
 
 
