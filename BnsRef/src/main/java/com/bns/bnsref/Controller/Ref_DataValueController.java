@@ -3,6 +3,7 @@ package com.bns.bnsref.Controller;
 
 import com.bns.bnsref.dto.Ref_DataValueDTO;
 import com.bns.bnsref.Service.Ref_DataValueService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,23 +22,18 @@ public class Ref_DataValueController {
         Ref_DataValueDTO createdRefDataValue = refDataValueService.addRefDataValue(refDataValueDTO);
         return ResponseEntity.status(201).body(createdRefDataValue);
     }
-
     @PutMapping("/update/{codeRefDataValue}")
-    public ResponseEntity<Ref_DataValueDTO> updateRefDataValue(@PathVariable String codeRefDataValue, @RequestBody Ref_DataValueDTO refDataValueDTO) {
+    public ResponseEntity<Ref_DataValueDTO> updateRefDataValue(
+            @PathVariable String codeRefDataValue,
+            @Valid @RequestBody Ref_DataValueDTO refDataValueDTO) {
         Ref_DataValueDTO updatedRefDataValue = refDataValueService.updateRefDataValue(codeRefDataValue, refDataValueDTO);
         return ResponseEntity.ok(updatedRefDataValue);
     }
 
-//    @DeleteMapping("/delete/{codeRefDataValue}")
-//    public ResponseEntity<Void> deleteRefDataValue(@PathVariable String codeRefDataValue) {
-//        refDataValueService.deleteRefDataValue(codeRefDataValue);
-//        return ResponseEntity.noContent().build();
-//    }
-
     @DeleteMapping("/delete/{codeRefDataValue}")
-    public ResponseEntity<String> deleteRefDataValue(@PathVariable String codeRefDataValue) {
+    public ResponseEntity<Void> deleteRefDataValue(@PathVariable String codeRefDataValue) {
         refDataValueService.deleteRefDataValue(codeRefDataValue);
-        return ResponseEntity.ok("Ref_DataValue and associated children deleted successfully!");
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{codeRefDataValue}")

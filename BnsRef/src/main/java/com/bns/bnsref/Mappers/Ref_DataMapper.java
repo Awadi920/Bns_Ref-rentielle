@@ -26,6 +26,7 @@ public class Ref_DataMapper {
                 .designation(entity.getDesignation())
                 .description(entity.getDescription())
                 .codeListCode(entity.getCodeList() != null ? entity.getCodeList().getCodeList() : null)
+                .orderPosition(entity.getOrderPosition()) // Ajout
                 .build();
 
         dto.setValues(entity.getRefDataValues().stream()
@@ -44,6 +45,7 @@ public class Ref_DataMapper {
                 .designation(entity.getDesignation())
                 .description(entity.getDescription())
                 .codeListCode(entity.getCodeList() != null ? entity.getCodeList().getCodeList() : null)
+                .orderPosition(entity.getOrderPosition()) // Ajout
                 .values(new ArrayList<>()) // Empty list to match DTO structure
                 .translations(new ArrayList<>()) // Empty list to match DTO structure
                 .build();
@@ -54,6 +56,7 @@ public class Ref_DataMapper {
                 .codeRefData(dto.getCodeRefData())
                 .designation(dto.getDesignation())
                 .description(dto.getDescription())
+                .orderPosition(dto.getOrderPosition()) // Ajout
                 .build();
     }
 

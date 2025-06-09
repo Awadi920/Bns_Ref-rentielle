@@ -18,6 +18,7 @@ public class Ref_DataSpecMapper {
 
     private final Ref_DataSpecValueMapper refDataSpecValueMapper;
 
+
     public Ref_DataSpecDTO toDTO(Ref_DataSpec entity) {
         if (entity == null) return null;
 
@@ -26,12 +27,15 @@ public class Ref_DataSpecMapper {
                 .designation(entity.getDesignation())
                 .description(entity.getDescription())
                 .codeListCode(entity.getCodeList() != null ? entity.getCodeList().getCodeList() : null)
+                .orderPosition(entity.getOrderPosition())
                 .build();
 
-        dto.setSpecValues(entity.getRefDataSpecValues().stream()
+        dto.setSpecValues(entity.getRefDataSpecValues() != null
+                ? entity.getRefDataSpecValues().stream()
                 .map(refDataSpecValueMapper::toDTO)
                 .distinct()
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList())
+                : new ArrayList<>());
 
         return dto;
     }
@@ -46,6 +50,7 @@ public class Ref_DataSpecMapper {
                 .designation(entity.getDesignation())
                 .description(entity.getDescription())
                 .codeListCode(entity.getCodeList() != null ? entity.getCodeList().getCodeList() : null)
+                .orderPosition(entity.getOrderPosition()) // Ajout
                 .specValues(new ArrayList<>()) // Empty list to match DTO structure
                 .translations(new ArrayList<>()) // Empty list to match DTO structure
                 .build();
@@ -58,6 +63,7 @@ public class Ref_DataSpecMapper {
                 .codeRefDataSpec(dto.getCodeRefDataSpec())
                 .designation(dto.getDesignation())
                 .description(dto.getDescription())
+                .orderPosition(dto.getOrderPosition()) // Ajout
                 .build();
     }
 
@@ -120,4 +126,5 @@ public class Ref_DataSpecMapper {
 
         return dto;
     }
+
 }

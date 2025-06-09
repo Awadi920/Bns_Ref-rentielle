@@ -24,6 +24,9 @@ public class Ref_DataDTO {
     @JsonView(Views.Basic.class)
     private String codeListCode;
 
+    @JsonView(Views.Basic.class)
+    private Integer orderPosition; // Nouveau champ
+
     @JsonView(Views.Detailed.class)
     @Builder.Default
     private List<Ref_DataValueDTO> values = new ArrayList<>();

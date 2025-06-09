@@ -9,7 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface Ref_DataSpecDAO extends JpaRepository<Ref_DataSpec, String>, JpaSpecificationExecutor<Ref_DataSpec> {
@@ -18,5 +20,9 @@ public interface Ref_DataSpecDAO extends JpaRepository<Ref_DataSpec, String>, Jp
 
     @EntityGraph(attributePaths = {"codeList"}) // Fetch codeList for Ref_DataSpecDTO
     Page<Ref_DataSpec> findAll(Pageable pageable); // Changed to standard findAll
+
+
+    @Query("SELECT r FROM Ref_DataSpec r WHERE r.codeList.codeList = :codeListCode")
+    List<Ref_DataSpec> findByCodeListCodeList(@Param("codeListCode") String codeListCode);
 }
 

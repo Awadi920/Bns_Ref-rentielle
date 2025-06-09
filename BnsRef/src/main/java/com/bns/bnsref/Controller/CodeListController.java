@@ -4,6 +4,7 @@ import com.bns.bnsref.dao.*;
 import com.bns.bnsref.dto.CodeListDTO;
 import com.bns.bnsref.Service.CodeListService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,8 @@ import java.util.List;
 @RequestMapping("/codelists")
 @RequiredArgsConstructor
 //@CrossOrigin("*")
+@Slf4j
+
 public class CodeListController {
 
     @Autowired
@@ -35,8 +38,11 @@ public class CodeListController {
         return ResponseEntity.ok(codeListService.updateCodeList(codeListId, codeListDTO));
     }
 
+
+
     @DeleteMapping("/delete/{codeListId}")
     public ResponseEntity<Void> deleteCodeList(@PathVariable String codeListId) {
+        log.info("Request to delete CodeList: {}", codeListId);
         codeListService.deleteCodeList(codeListId);
         return ResponseEntity.noContent().build();
     }
@@ -54,7 +60,7 @@ public class CodeListController {
 //    }
 
     @GetMapping("/all")
-    //@PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<CodeListDTO>> getAllCodeLists(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {

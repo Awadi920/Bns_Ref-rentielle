@@ -24,15 +24,19 @@ public class Ref_DataValue {
     private Ref_Data refData;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_value_code")
-    @JsonBackReference
-    private Ref_DataValue parentValue;
-
-    @OneToMany(mappedBy = "parentValue", fetch = FetchType.LAZY)
-    @ToString.Exclude
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REMOVE})
+    @JoinTable(
+            name = "ref_data_value_parent_child",
+            joinColumns = @JoinColumn(name = "child_id", referencedColumnName = "codeRefDataValue"),
+            inverseJoinColumns = @JoinColumn(name = "parent_id", referencedColumnName = "codeRefDataValue")
+    )
     @JsonManagedReference
-    private Set<Ref_DataValue> childValues = new HashSet<>();
+    private Set<Ref_DataValue> parents = new HashSet<>();
+
+    @ManyToMany(mappedBy = "parents", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JsonBackReference
+    @JsonManagedReference
+    private Set<Ref_DataValue> children = new HashSet<>();
 
     @OneToMany(mappedBy = "refDataValue",cascade = CascadeType.REMOVE , fetch = FetchType.LAZY)
     @ToString.Exclude

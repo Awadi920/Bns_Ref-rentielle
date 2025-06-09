@@ -3,6 +3,7 @@ package com.bns.bnsref.dto;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -16,13 +17,20 @@ public class Ref_DataValueDTO {
     // Code de la Ref_Data associée
     private String codeRefData;
 
-    // Code de la valeur parent
-    private String parentValueCode;
-
-    private List<String> childValueCodes; // Nouveau champ pour recevoir les codes des enfants
-    private List<Ref_DataValueDTO> childValues= new ArrayList<>(); // Pas inclus dans hashCode/equals
+    private List<String> parentValueCodes;
+    private String parentValueCode; // Added for backward compatibility
+    private List<String> childValueCodes;
 
     @Builder.Default
     private List<RefDataValueTranslationDTO> translations = new ArrayList<>(); // Ajout des traductions
 
+    // Custom getter to handle both parentValueCode and parentValueCodes
+    public List<String> getParentValueCodes() {
+        if (parentValueCodes != null && !parentValueCodes.isEmpty()) {
+            return parentValueCodes;
+        } else if (parentValueCode != null) {
+            return Collections.singletonList(parentValueCode);
+        }
+        return new ArrayList<>();
+    }
 }

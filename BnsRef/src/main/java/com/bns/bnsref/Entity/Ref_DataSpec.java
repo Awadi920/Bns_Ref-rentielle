@@ -17,9 +17,11 @@ public class Ref_DataSpec implements Serializable {
     private String codeRefDataSpec;
     private String designation;
     private String description;
+    private Integer orderPosition; // Nouveau champ pour l'ordre
 
     // relation with codelist *--> 1 bidirectional
     @ManyToOne
+    @JoinColumn(name = "code_list_code_list", nullable = false)
     private CodeList codeList;
 
     @OneToMany(mappedBy = "refDataSpec", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)

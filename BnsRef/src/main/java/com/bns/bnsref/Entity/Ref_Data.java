@@ -19,6 +19,7 @@ public class Ref_Data implements Serializable {
     private String codeRefData;
     private String designation;
     private String description;
+    private Integer orderPosition; // Nouveau champ pour l'ordre
 
     @ManyToOne
     private CodeList codeList;
