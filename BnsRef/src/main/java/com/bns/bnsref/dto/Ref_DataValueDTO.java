@@ -17,6 +17,8 @@ public class Ref_DataValueDTO {
     // Code de la Ref_Data associée
     private String codeRefData;
 
+    private String rowId; // Nouveau champ
+
     private List<String> parentValueCodes;
     private String parentValueCode; // Added for backward compatibility
     private List<String> childValueCodes;
@@ -33,4 +35,6 @@ public class Ref_DataValueDTO {
         }
         return new ArrayList<>();
     }
+
+
 }

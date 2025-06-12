@@ -3,6 +3,8 @@ package com.bns.bnsref.Service;
 import com.bns.bnsref.dto.CodeListDTO;
 
 import java.util.*;
+
+import com.bns.bnsref.dto.CodeListRowDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,4 +18,6 @@ public interface CodeListService {
 
     List<CodeListDTO> getFilteredAndSortedCodeLists();
 
+    void addCodeListRow(CodeListRowDTO rowDTO); // Nouvelle méthode
+    List<CodeListRowDTO> getCodeListRows(String codeListId); // Nouvelle méthode
 }

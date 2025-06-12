@@ -19,6 +19,11 @@ public class Ref_DataValue {
     private String codeRefDataValue;
     private String value;
 
+    // Nouveau champ
+    @Column(name = "row_id")
+    private String rowId; // Identifiant de la ligne pour regrouper les valeurs
+
+
     // relation *-->1 with Ref_Data bidirectional
     @ManyToOne(fetch = FetchType.LAZY)
     private Ref_Data refData;

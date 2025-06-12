@@ -21,6 +21,7 @@ public class Ref_DataValueMapper {
                 .codeRefDataValue(entity.getCodeRefDataValue())
                 .value(entity.getValue())
                 .codeRefData(entity.getRefData() != null ? entity.getRefData().getCodeRefData() : null)
+                .rowId(entity.getRowId()) // Ajout
                 .build();
 
         return dto;
@@ -46,6 +47,7 @@ public class Ref_DataValueMapper {
         Ref_DataValueDTO dto = new Ref_DataValueDTO();
         dto.setCodeRefDataValue(entity.getCodeRefDataValue());
         dto.setCodeRefData(entity.getRefData() != null ? entity.getRefData().getCodeRefData() : null);
+        dto.setRowId(entity.getRowId()); // Ajout
 
         if (lang != null) {
             Ref_DataValueTranslation translation = entity.getTranslations().stream()
@@ -75,6 +77,7 @@ public class Ref_DataValueMapper {
         return Ref_DataValue.builder()
                 .codeRefDataValue(dto.getCodeRefDataValue())
                 .value(dto.getValue())
+                .rowId(dto.getRowId()) // Ajout
                 .build();
     }
 }

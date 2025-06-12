@@ -17,6 +17,10 @@ public class Ref_DataSpecValue implements Serializable {
     private String codeRefDataSpecValue;
     private String value;
 
+    // Nouveau champ
+    @Column(name = "row_id")
+    private String rowId; // Identifiant de la ligne pour regrouper les valeurs
+
     // relation with Ref_DataSpec *--> 1 bidirectional
     @ManyToOne(fetch = FetchType.LAZY)
     private Ref_DataSpec refDataSpec;

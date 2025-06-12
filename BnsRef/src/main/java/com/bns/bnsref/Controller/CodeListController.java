@@ -3,6 +3,7 @@ package com.bns.bnsref.Controller;
 import com.bns.bnsref.dao.*;
 import com.bns.bnsref.dto.CodeListDTO;
 import com.bns.bnsref.Service.CodeListService;
+import com.bns.bnsref.dto.CodeListRowDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,5 +74,20 @@ public class CodeListController {
         return ResponseEntity.ok(codeListService.getFilteredAndSortedCodeLists());
     }
 
+
+
+    // Nouvel endpoint pour ajouter une ligne
+    @PostMapping("/{codeListId}/rows")
+    public ResponseEntity<Void> addCodeListRow(@PathVariable String codeListId, @RequestBody CodeListRowDTO rowDTO) {
+        rowDTO.setCodeListId(codeListId);
+        codeListService.addCodeListRow(rowDTO);
+        return ResponseEntity.ok().build();
+    }
+
+    // Nouvel endpoint pour récupérer les lignes
+    @GetMapping("/{codeListId}/rows")
+    public ResponseEntity<List<CodeListRowDTO>> getCodeListRows(@PathVariable String codeListId) {
+        return ResponseEntity.ok(codeListService.getCodeListRows(codeListId));
+    }
 
 }

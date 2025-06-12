@@ -5,10 +5,15 @@ import com.bns.bnsref.Filter.Filter;
 import com.bns.bnsref.Filter.SortCriteria;
 import com.bns.bnsref.Filter.Specification.CodeListSpecification;
 import com.bns.bnsref.Mappers.Ref_DataMapper;
+import com.bns.bnsref.Mappers.Ref_DataSpecValueMapper;
+import com.bns.bnsref.Mappers.Ref_DataValueMapper;
 import com.bns.bnsref.dao.*;
 import com.bns.bnsref.dto.CodeListDTO;
 import com.bns.bnsref.Mappers.CodeListMapper;
 import com.bns.bnsref.Service.CodeListService;
+import com.bns.bnsref.dto.CodeListRowDTO;
+import com.bns.bnsref.dto.Ref_DataSpecValueDTO;
+import com.bns.bnsref.dto.Ref_DataValueDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
@@ -19,9 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -43,11 +46,13 @@ public class CodeListServiceImpl implements CodeListService {
     private final ProducerDAO producerDAO;
     private final Ref_DataDAO refDataDAO;
     private final Ref_DataSpecDAO refDataSpecDAO;
+    private final Ref_DataValueDAO refDataValueDAO; // Nouveau DAO
+    private final Ref_DataSpecValueDAO refDataSpecValueDAO; // Nouveau DAO
 
 
     private final CodeListMapper codeListMapper;
-    private final Ref_DataMapper refDataMapper;
-
+    private final Ref_DataValueMapper refDataValueMapper; // Nouveau mapper
+    private final Ref_DataSpecValueMapper refDataSpecValueMapper; // Nouveau mapper
 
 
     private final FilterRepository filterRepository;
@@ -194,5 +199,105 @@ public class CodeListServiceImpl implements CodeListService {
         return codeLists.stream()
                 .map(codeListMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public void addCodeListRow(CodeListRowDTO rowDTO) {
+        String codeListId = rowDTO.getCodeListId();
+        CodeList codeList = codeListDAO.findById(codeListId)
+                .orElseThrow(() -> new RuntimeException("CodeList non trouvé avec le code: " + codeListId));
+
+        String rowId = rowDTO.getRowId() != null ? rowDTO.getRowId() : UUID.randomUUID().toString();
+
+        // Sauvegarder les Ref_DataValue
+        String lastRefDataValueCode = refDataValueDAO.findLastRefDataValueCode().orElse("RDV000");
+        int nextRefDataValueId = Integer.parseInt(lastRefDataValueCode.replace("RDV", "")) + 1;
+
+        List<Ref_DataValue> refDataValues = new ArrayList<>();
+        for (Ref_DataValueDTO valueDTO : rowDTO.getRefDataValues()) {
+            String newCodeRefDataValue = String.format("RDV%03d", nextRefDataValueId++);
+            valueDTO.setCodeRefDataValue(newCodeRefDataValue);
+            valueDTO.setRowId(rowId);
+
+            Ref_Data refData = refDataDAO.findById(valueDTO.getCodeRefData())
+                    .orElseThrow(() -> new RuntimeException("Ref_Data non trouvé avec le code: " + valueDTO.getCodeRefData()));
+
+            if (!refData.getCodeList().getCodeList().equals(codeListId)) {
+                throw new RuntimeException("Ref_Data " + valueDTO.getCodeRefData() + " n'appartient pas au CodeList " + codeListId);
+            }
+
+            Ref_DataValue entity = refDataValueMapper.toEntity(valueDTO);
+            entity.setRefData(refData);
+            refDataValues.add(entity);
+        }
+        refDataValueDAO.saveAll(refDataValues);
+
+        // Sauvegarder les Ref_DataSpecValue
+        String lastRefDataSpecValueCode = refDataSpecValueDAO.findLastRefDataSpecValueCode().orElse("RDSV000");
+        int nextRefDataSpecValueId = Integer.parseInt(lastRefDataSpecValueCode.replace("RDSV", "")) + 1;
+
+        List<Ref_DataSpecValue> refDataSpecValues = new ArrayList<>();
+        for (Ref_DataSpecValueDTO specValueDTO : rowDTO.getRefDataSpecValues()) {
+            String newCodeRefDataSpecValue = String.format("RDSV%03d", nextRefDataSpecValueId++);
+            specValueDTO.setCodeRefDataSpecValue(newCodeRefDataSpecValue);
+            specValueDTO.setRowId(rowId);
+
+            Ref_DataSpec refDataSpec = refDataSpecDAO.findById(specValueDTO.getCodeRefDataSpec())
+                    .orElseThrow(() -> new RuntimeException("Ref_DataSpec non trouvé avec le code: " + specValueDTO.getCodeRefDataSpec()));
+
+            if (!refDataSpec.getCodeList().getCodeList().equals(codeListId)) {
+                throw new RuntimeException("Ref_DataSpec " + specValueDTO.getCodeRefDataSpec() + " n'appartient pas au CodeList " + codeListId);
+            }
+
+            Ref_DataSpecValue entity = refDataSpecValueMapper.toEntity(specValueDTO);
+            entity.setRefDataSpec(refDataSpec);
+
+            // Associer Ref_DataValue si spécifié
+            if (specValueDTO.getRefDataValueCode() != null) {
+                Ref_DataValue refDataValue = refDataValueDAO.findById(specValueDTO.getRefDataValueCode())
+                        .orElseThrow(() -> new RuntimeException("Ref_DataValue non trouvé avec le code: " + specValueDTO.getRefDataValueCode()));
+                entity.setRefDataValue(refDataValue);
+            }
+
+            refDataSpecValues.add(entity);
+        }
+        refDataSpecValueDAO.saveAll(refDataSpecValues);
+
+        log.info("Ligne ajoutée avec rowId: {} pour CodeList: {}", rowId, codeListId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CodeListRowDTO> getCodeListRows(String codeListId) {
+        CodeList codeList = codeListDAO.findById(codeListId)
+                .orElseThrow(() -> new RuntimeException("CodeList not found: " + codeListId));
+
+        List<Ref_DataValue> refDataValues = refDataValueDAO.findByCodeListId(codeListId);
+        List<Ref_DataSpecValue> refDataSpecValues = refDataSpecValueDAO.findByCodeListId(codeListId);
+
+        Map<String, List<Ref_DataValueDTO>> refDataValuesByRowId = refDataValues.stream()
+                .map(refDataValueMapper::toDTO)
+                .collect(Collectors.groupingBy(Ref_DataValueDTO::getRowId));
+
+        Map<String, List<Ref_DataSpecValueDTO>> refDataSpecValuesByRowId = refDataSpecValues.stream()
+                .map(refDataSpecValueMapper::toDTO)
+                .collect(Collectors.groupingBy(Ref_DataSpecValueDTO::getRowId));
+
+        Set<String> rowIds = new HashSet<>();
+        rowIds.addAll(refDataValuesByRowId.keySet());
+        rowIds.addAll(refDataSpecValuesByRowId.keySet());
+
+        List<CodeListRowDTO> rows = new ArrayList<>();
+        for (String rowId : rowIds) {
+            CodeListRowDTO rowDTO = new CodeListRowDTO();
+            rowDTO.setRowId(rowId);
+            rowDTO.setCodeListId(codeListId);
+            rowDTO.setRefDataValues(refDataValuesByRowId.getOrDefault(rowId, new ArrayList<>()));
+            rowDTO.setRefDataSpecValues(refDataSpecValuesByRowId.getOrDefault(rowId, new ArrayList<>()));
+            rows.add(rowDTO);
+        }
+
+        return rows;
     }
 }

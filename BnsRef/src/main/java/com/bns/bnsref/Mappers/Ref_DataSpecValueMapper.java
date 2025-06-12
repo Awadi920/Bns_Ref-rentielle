@@ -24,6 +24,7 @@ public class Ref_DataSpecValueMapper {
                 .value(entity.getValue())
                 .codeRefDataSpec(entity.getRefDataSpec() != null ? entity.getRefDataSpec().getCodeRefDataSpec() : null)
                 .refDataValueCode(entity.getRefDataValue() != null ? entity.getRefDataValue().getCodeRefDataValue() : null)
+                .rowId(entity.getRowId()) // Ajout
                 .build();
     }
 
@@ -33,6 +34,7 @@ public class Ref_DataSpecValueMapper {
         return Ref_DataSpecValue.builder()
                 .codeRefDataSpecValue(dto.getCodeRefDataSpecValue())
                 .value(dto.getValue())
+                .rowId(dto.getRowId()) // Ajout
                 .build();
     }
 
@@ -54,6 +56,7 @@ public class Ref_DataSpecValueMapper {
         Ref_DataSpecValueDTO dto = new Ref_DataSpecValueDTO();
         dto.setCodeRefDataSpecValue(entity.getCodeRefDataSpecValue());
         dto.setCodeRefDataSpec(entity.getRefDataSpec().getCodeRefDataSpec());
+        dto.setRowId(entity.getRowId()); // Ajout
 
         if (lang != null) {
             Ref_DataSpecValueTranslation translation = entity.getTranslations().stream()
