@@ -4,17 +4,23 @@ import com.bns.bnsref.dao.*;
 import com.bns.bnsref.dto.CodeListDTO;
 import com.bns.bnsref.Service.CodeListService;
 import com.bns.bnsref.dto.CodeListRowDTO;
+import com.bns.bnsref.validation.UniqueLabelListValidator;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+
+
 
 
 @RestController
@@ -28,16 +34,65 @@ public class CodeListController {
     @Autowired
     private final CodeListService codeListService;
 
+    private final UniqueLabelListValidator uniqueLabelListValidator;
+
+
+
+    public static class ErrorResponse {
+        private String message;
+        private Map<String, String> errors;
+
+        public ErrorResponse(String message, Map<String, String> errors) {
+            this.message = message;
+            this.errors = errors;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public Map<String, String> getErrors() {
+            return errors;
+        }
+    }
 
     @PostMapping("/add")
-    public ResponseEntity<CodeListDTO> addCodeList(@RequestBody CodeListDTO codeListDTO) {
-        return ResponseEntity.ok(codeListService.addCodeList(codeListDTO));
+    public ResponseEntity<?> addCodeList(@Valid @RequestBody CodeListDTO codeListDTO) {
+        try {
+            log.info("Attempting to add CodeList with labelList: {}", codeListDTO.getLabelList());
+            CodeListDTO savedCodeList = codeListService.addCodeList(codeListDTO);
+            return ResponseEntity.ok(savedCodeList);
+        } catch (RuntimeException e) {
+            log.error("Error adding CodeList: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse("Error adding CodeList", Map.of("error", e.getMessage())));
+        }
     }
 
     @PutMapping("/update/{codeListId}")
-    public ResponseEntity<CodeListDTO> updateCodeList(@PathVariable String codeListId, @RequestBody CodeListDTO codeListDTO) {
-        return ResponseEntity.ok(codeListService.updateCodeList(codeListId, codeListDTO));
+    public ResponseEntity<?> updateCodeList(@PathVariable String codeListId, @Valid @RequestBody CodeListDTO codeListDTO) {
+        try {
+            log.info("Attempting to update CodeList with ID: {}, labelList: {}", codeListId, codeListDTO.getLabelList());
+            uniqueLabelListValidator.setCodeListId(codeListId);
+            CodeListDTO updatedCodeList = codeListService.updateCodeList(codeListId, codeListDTO);
+            return ResponseEntity.ok(updatedCodeList);
+        } catch (RuntimeException e) {
+            log.error("Error updating CodeList: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse("Error updating CodeList", Map.of("error", e.getMessage())));
+        }
     }
+
+
+//    @PostMapping("/add")
+//    public ResponseEntity<CodeListDTO> addCodeList(@RequestBody CodeListDTO codeListDTO) {
+//        return ResponseEntity.ok(codeListService.addCodeList(codeListDTO));
+//    }
+//
+//    @PutMapping("/update/{codeListId}")
+//    public ResponseEntity<CodeListDTO> updateCodeList(@PathVariable String codeListId, @RequestBody CodeListDTO codeListDTO) {
+//        return ResponseEntity.ok(codeListService.updateCodeList(codeListId, codeListDTO));
+//    }
 
 
 

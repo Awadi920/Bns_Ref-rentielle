@@ -58,5 +58,11 @@ List<CodeList> findAllWithRelations();
             "category",
             "producer"
     })
+
+
     Optional<CodeList> findById(String codeListCode);
+
+    Optional<CodeList> findByLabelList(String labelList);
+
+
 }

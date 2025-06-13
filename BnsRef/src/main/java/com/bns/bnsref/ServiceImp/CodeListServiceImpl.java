@@ -34,7 +34,6 @@ import org.springframework.data.domain.Pageable;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-
 public class CodeListServiceImpl implements CodeListService {
 
     private static final Logger logger = LoggerFactory.getLogger(CodeListServiceImpl.class);
@@ -93,7 +92,7 @@ public class CodeListServiceImpl implements CodeListService {
                     .designation(defaultColumns[i])
                     .description("Colonne par défaut: " + defaultColumns[i])
                     .codeList(savedCodeList)
-                    .orderPosition(i) // Définir l'ordre initial
+                    .orderPosition(i)
                     .build();
             defaultRefData.add(refData);
         }
@@ -105,16 +104,14 @@ public class CodeListServiceImpl implements CodeListService {
         return codeListMapper.toDTO(savedCodeList);
     }
 
-
+    @Override
     public CodeListDTO updateCodeList(String codeListId, CodeListDTO codeListDTO) {
         CodeList existingCodeList = codeListDAO.findById(codeListId)
                 .orElseThrow(() -> new RuntimeException("CodeList not found"));
 
-        // Mettre à jour les champs sans écraser la creationDate
         existingCodeList.setLabelList(codeListDTO.getLabelList());
         existingCodeList.setDescription(codeListDTO.getDescription());
 
-        // Vérifier si les nouvelles valeurs existent avant de les mettre à jour
         if (codeListDTO.getDomainCode() != null) {
             Domain domain = domainDAO.findById(codeListDTO.getDomainCode())
                     .orElseThrow(() -> new RuntimeException("Domain not found"));
@@ -133,11 +130,92 @@ public class CodeListServiceImpl implements CodeListService {
             existingCodeList.setProducer(producer);
         }
 
-        // Sauvegarder sans modifier creationDate
         CodeList updatedCodeList = codeListDAO.save(existingCodeList);
 
         return codeListMapper.toDTO(updatedCodeList);
     }
+
+
+//
+//    @Override
+//    public CodeListDTO addCodeList(CodeListDTO codeListDTO) {
+//        Domain domain = domainDAO.findById(codeListDTO.getDomainCode())
+//                .orElseThrow(() -> new RuntimeException("Domain non trouvé avec le code: " + codeListDTO.getDomainCode()));
+//
+//        Category category = categoryDAO.findById(codeListDTO.getCodeCategory())
+//                .orElseThrow(() -> new RuntimeException("Category non trouvée avec le code: " + codeListDTO.getCodeCategory()));
+//
+//        Producer producer = producerDAO.findById(codeListDTO.getProducerCode())
+//                .orElseThrow(() -> new RuntimeException("Producer non trouvé avec le code: " + codeListDTO.getProducerCode()));
+//
+//        String lastCodeList = codeListDAO.findLastCodeList().orElse("CL000");
+//        int nextId = Integer.parseInt(lastCodeList.replace("CL", "")) + 1;
+//        String newCodeList = String.format("CL%03d", nextId);
+//
+//        CodeList codeList = codeListMapper.toEntity(codeListDTO, domain, category, producer);
+//        codeList.setCodeList(newCodeList);
+//        codeList.setCreationDate(LocalDateTime.now());
+//
+//        CodeList savedCodeList = codeListDAO.save(codeList);
+//
+//        String lastCodeRefData = refDataDAO.findLastRefDataCode().orElse("REFD000");
+//        int nextRefDataId = Integer.parseInt(lastCodeRefData.replace("REFD", "")) + 1;
+//
+//        String[] defaultColumns = {"code", "libellé", "description", "date début", "date fin"};
+//        Set<Ref_Data> defaultRefData = new HashSet<>();
+//
+//        for (int i = 0; i < defaultColumns.length; i++) {
+//            String newCodeRefData = String.format("REFD%03d", nextRefDataId + i);
+//            Ref_Data refData = Ref_Data.builder()
+//                    .codeRefData(newCodeRefData)
+//                    .designation(defaultColumns[i])
+//                    .description("Colonne par défaut: " + defaultColumns[i])
+//                    .codeList(savedCodeList)
+//                    .orderPosition(i) // Définir l'ordre initial
+//                    .build();
+//            defaultRefData.add(refData);
+//        }
+//
+//        refDataDAO.saveAll(defaultRefData);
+//        savedCodeList.setRefData(defaultRefData);
+//        codeListDAO.save(savedCodeList);
+//
+//        return codeListMapper.toDTO(savedCodeList);
+//    }
+//
+//
+//    public CodeListDTO updateCodeList(String codeListId, CodeListDTO codeListDTO) {
+//        CodeList existingCodeList = codeListDAO.findById(codeListId)
+//                .orElseThrow(() -> new RuntimeException("CodeList not found"));
+//
+//        // Mettre à jour les champs sans écraser la creationDate
+//        existingCodeList.setLabelList(codeListDTO.getLabelList());
+//        existingCodeList.setDescription(codeListDTO.getDescription());
+//
+//        // Vérifier si les nouvelles valeurs existent avant de les mettre à jour
+//        if (codeListDTO.getDomainCode() != null) {
+//            Domain domain = domainDAO.findById(codeListDTO.getDomainCode())
+//                    .orElseThrow(() -> new RuntimeException("Domain not found"));
+//            existingCodeList.setDomain(domain);
+//        }
+//
+//        if (codeListDTO.getCodeCategory() != null) {
+//            Category category = categoryDAO.findById(codeListDTO.getCodeCategory())
+//                    .orElseThrow(() -> new RuntimeException("Category not found"));
+//            existingCodeList.setCategory(category);
+//        }
+//
+//        if (codeListDTO.getProducerCode() != null) {
+//            Producer producer = producerDAO.findById(codeListDTO.getProducerCode())
+//                    .orElseThrow(() -> new RuntimeException("Producer not found"));
+//            existingCodeList.setProducer(producer);
+//        }
+//
+//        // Sauvegarder sans modifier creationDate
+//        CodeList updatedCodeList = codeListDAO.save(existingCodeList);
+//
+//        return codeListMapper.toDTO(updatedCodeList);
+//    }
 
     @Transactional
     public void deleteCodeList(String codeListCode) {
