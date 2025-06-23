@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/refdataspecvalue")
+@RequestMapping("/api/refdataspecvalue")
 @RequiredArgsConstructor
 public class Ref_DataSpecValueController {
 

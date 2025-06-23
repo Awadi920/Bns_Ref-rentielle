@@ -135,6 +135,35 @@ public class CodeListServiceImpl implements CodeListService {
         return codeListMapper.toDTO(updatedCodeList);
     }
 
+    @Transactional
+    public void deleteCodeList(String codeListCode) {
+        // Supprimer manuellement les Ref_DataSpec associés
+        List<Ref_DataSpec> refDataSpecs = refDataSpecDAO.findByCodeListCodeList(codeListCode);
+        log.info("Found {} Ref_DataSpec to delete for CodeList {}",
+                refDataSpecs.size(), codeListCode);
+        refDataSpecDAO.deleteAll(refDataSpecs);
+
+        // Supprimer le CodeList
+        CodeList codeList = codeListDAO.findById(codeListCode)
+                .orElseThrow(() -> new EntityNotFoundException("CodeList not found: " + codeListCode));
+        codeListDAO.delete(codeList);
+        log.info("Deleted CodeList {}", codeListCode);
+    }
+
+    @Override
+    public CodeListDTO getCodeListById(String codeListId) {
+        CodeList codeList = codeListDAO.findById(codeListId)
+                .orElseThrow(() -> new RuntimeException("CodeList non trouvé !"));
+        return codeListMapper.toDTO(codeList);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CodeListDTO> getAllCodeLists(Pageable pageable) {
+        Page<CodeList> codeListPage = codeListDAO.findAll(pageable);
+        return codeListPage.map(codeListMapper::toDTO);
+    }
 
 //
 //    @Override
@@ -217,27 +246,7 @@ public class CodeListServiceImpl implements CodeListService {
 //        return codeListMapper.toDTO(updatedCodeList);
 //    }
 
-    @Transactional
-    public void deleteCodeList(String codeListCode) {
-        // Supprimer manuellement les Ref_DataSpec associés
-        List<Ref_DataSpec> refDataSpecs = refDataSpecDAO.findByCodeListCodeList(codeListCode);
-        log.info("Found {} Ref_DataSpec to delete for CodeList {}",
-                refDataSpecs.size(), codeListCode);
-        refDataSpecDAO.deleteAll(refDataSpecs);
 
-        // Supprimer le CodeList
-        CodeList codeList = codeListDAO.findById(codeListCode)
-                .orElseThrow(() -> new EntityNotFoundException("CodeList not found: " + codeListCode));
-        codeListDAO.delete(codeList);
-        log.info("Deleted CodeList {}", codeListCode);
-    }
-
-    @Override
-    public CodeListDTO getCodeListById(String codeListId) {
-        CodeList codeList = codeListDAO.findById(codeListId)
-                .orElseThrow(() -> new RuntimeException("CodeList non trouvé !"));
-        return codeListMapper.toDTO(codeList);
-    }
 
 //    @Override
 //    public List<CodeListDTO> getAllCodeLists() {
@@ -247,12 +256,6 @@ public class CodeListServiceImpl implements CodeListService {
 //                .collect(Collectors.toList());
 //    }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<CodeListDTO> getAllCodeLists(Pageable pageable) {
-        Page<CodeList> codeListPage = codeListDAO.findAll(pageable);
-        return codeListPage.map(codeListMapper::toDTO);
-    }
 
 
 

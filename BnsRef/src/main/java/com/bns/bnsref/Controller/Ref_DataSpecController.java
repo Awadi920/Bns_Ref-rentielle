@@ -16,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @RestController
-@RequestMapping("/refdataspec")
+@RequestMapping("/api/refdataspec")
 @RequiredArgsConstructor
 public class Ref_DataSpecController {
 

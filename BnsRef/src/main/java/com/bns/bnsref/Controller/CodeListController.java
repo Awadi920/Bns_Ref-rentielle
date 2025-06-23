@@ -24,7 +24,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/codelists")
+@RequestMapping("/api/codelists")
 @RequiredArgsConstructor
 //@CrossOrigin("*")
 @Slf4j

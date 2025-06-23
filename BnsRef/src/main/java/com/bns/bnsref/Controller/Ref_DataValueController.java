@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/refdatavalue")
+@RequestMapping("/api/refdatavalue")
 @RequiredArgsConstructor
 public class Ref_DataValueController {
 

@@ -19,7 +19,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @RestController
-@RequestMapping("/refdata")
+@RequestMapping("/api/refdata")
 @RequiredArgsConstructor
 public class Ref_DataController {
 
