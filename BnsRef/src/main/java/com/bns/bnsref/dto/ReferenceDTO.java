@@ -20,6 +20,10 @@ public class ReferenceDTO {
     @JsonView(Views.Detailed.class)
     private String description;
 
+    // Nouvel attribut boolean
+    @JsonView(Views.Detailed.class)
+    private boolean translated;
+
     // Relations
     private String domainCode; // Code du domaine
     private String categoryCode; // Code de la catégorie

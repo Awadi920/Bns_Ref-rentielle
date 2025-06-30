@@ -23,6 +23,7 @@ public class ReferenceMapper {
         dto.setCodeList(codeList.getCodeList());
         dto.setLabelList(codeList.getLabelList());
         dto.setDescription(codeList.getDescription());
+        dto.setTranslated(codeList.isTranslated());
         // Mapper les autres champs (domain, category, producer, refData, etc.)
         dto.setDomainCode(codeList.getDomain() != null ? codeList.getDomain().getCodeDomain() : null);
         dto.setCategoryCode(codeList.getCategory() != null ? codeList.getCategory().getCodeCategory() : null);

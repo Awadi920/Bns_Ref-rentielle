@@ -103,12 +103,12 @@ public class ReferenceServiceImpl implements ReferenceService {
     public ReferenceDTO getReferenceDetailsWithAllTranslations(String codeListCode) {
         CodeList codeList = codeListDAO.findById(codeListCode)
                 .orElseThrow(() -> new RuntimeException("CodeList not found: " + codeListCode));
+        logger.info("CodeList {} has translated: {}", codeList.getCodeList(), codeList.isTranslated());
 
-        ReferenceDTO dto = new ReferenceDTO();
-        dto.setCodeList(codeList.getCodeList());
-        dto.setLabelList(codeList.getLabelList());
-        dto.setDescription(codeList.getDescription());
+        // Utiliser le ReferenceMapper pour créer le DTO
+        ReferenceDTO dto = referenceMapper.toDTO(codeList);
 
+        // Ajouter les traductions
         dto.setTranslations(codeList.getTranslations().stream()
                 .map(t -> new CodeListTranslationDTO(
                         t.getCodeListTranslation(),

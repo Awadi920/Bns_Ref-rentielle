@@ -16,6 +16,8 @@ public class CodeListDTO {
     private String description;
     private LocalDateTime creationDate;
 
+    private boolean translated;
+
     // Identifiants des entités associées
     private String domainCode;
     private String codeCategory;  // Correct en camelCase

@@ -17,6 +17,8 @@ public class Ref_DataValueDTO {
     // Code de la Ref_Data associée
     private String codeRefData;
 
+    private String languageCode;
+
     private String rowId; // Nouveau champ
 
     private List<String> parentValueCodes;

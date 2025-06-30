@@ -381,4 +381,84 @@ public class CodeListServiceImpl implements CodeListService {
 
         return rows;
     }
+
+    @Override
+    @Transactional
+    public void addCodeListRowWithLanguages(String codeListId, CodeListRowDTO rowDTO) {
+        CodeList codeList = codeListDAO.findById(codeListId)
+                .orElseThrow(() -> new RuntimeException("CodeList not found: " + codeListId));
+
+        // Générer un rowId unique
+        String rowId = UUID.randomUUID().toString();
+
+        // Sauvegarder les Ref_DataValue
+        String lastRefDataValueCode = refDataValueDAO.findLastRefDataValueCode().orElse("RDV000");
+        int nextRefDataValueId = Integer.parseInt(lastRefDataValueCode.replace("RDV", "")) + 1;
+
+        List<Ref_DataValue> refDataValues = new ArrayList<>();
+        for (Ref_DataValueDTO valueDTO : rowDTO.getRefDataValues()) {
+            if (valueDTO.getLanguageCode() == null) {
+                throw new RuntimeException("languageCode required for Ref_DataValue: " + valueDTO.getCodeRefData());
+            }
+            String newCodeRefDataValue = String.format("RDV%03d", nextRefDataValueId++);
+            valueDTO.setCodeRefDataValue(newCodeRefDataValue);
+
+            Ref_Data refData = refDataDAO.findById(valueDTO.getCodeRefData())
+                    .orElseThrow(() -> new RuntimeException("Ref_Data not found: " + valueDTO.getCodeRefData()));
+
+            if (!refData.getCodeList().getCodeList().equals(codeListId)) {
+                throw new RuntimeException("Ref_Data " + valueDTO.getCodeRefData() + " does not belong to CodeList " + codeListId);
+            }
+
+            Ref_DataValue entity = refDataValueMapper.toEntity(valueDTO);
+            entity.setRefData(refData);
+            entity.setRowId(rowId); // Assigner le rowId généré
+
+            Set<Ref_DataValue> parents = new HashSet<>();
+            for (String parentCode : valueDTO.getParentValueCodes()) {
+                Ref_DataValue parent = refDataValueDAO.findById(parentCode)
+                        .orElseThrow(() -> new RuntimeException("Parent Ref_DataValue not found: " + parentCode));
+                parents.add(parent);
+            }
+            entity.setParents(parents);
+
+            refDataValues.add(entity);
+        }
+        refDataValueDAO.saveAll(refDataValues);
+
+        // Sauvegarder les Ref_DataSpecValue
+        String lastRefDataSpecValueCode = refDataSpecValueDAO.findLastRefDataSpecValueCode().orElse("RDSV000");
+        int nextRefDataSpecValueId = Integer.parseInt(lastRefDataSpecValueCode.replace("RDSV", "")) + 1;
+
+        List<Ref_DataSpecValue> refDataSpecValues = new ArrayList<>();
+        for (Ref_DataSpecValueDTO specValueDTO : rowDTO.getRefDataSpecValues()) {
+            if (specValueDTO.getLanguageCode() == null) {
+                throw new RuntimeException("languageCode required for Ref_DataSpecValue: " + specValueDTO.getCodeRefDataSpec());
+            }
+            String newCodeRefDataSpecValue = String.format("RDSV%03d", nextRefDataSpecValueId++);
+            specValueDTO.setCodeRefDataSpecValue(newCodeRefDataSpecValue);
+
+            Ref_DataSpec refDataSpec = refDataSpecDAO.findById(specValueDTO.getCodeRefDataSpec())
+                    .orElseThrow(() -> new RuntimeException("Ref_DataSpec not found: " + specValueDTO.getCodeRefDataSpec()));
+
+            if (!refDataSpec.getCodeList().getCodeList().equals(codeListId)) {
+                throw new RuntimeException("Ref_DataSpec " + specValueDTO.getCodeRefDataSpec() + " does not belong to CodeList " + codeListId);
+            }
+
+            Ref_DataSpecValue entity = refDataSpecValueMapper.toEntity(specValueDTO);
+            entity.setRefDataSpec(refDataSpec);
+            entity.setRowId(rowId); // Assigner le rowId généré
+
+            if (specValueDTO.getRefDataValueCode() != null) {
+                Ref_DataValue refDataValue = refDataValueDAO.findById(specValueDTO.getRefDataValueCode())
+                        .orElseThrow(() -> new RuntimeException("Ref_DataValue not found: " + specValueDTO.getRefDataValueCode()));
+                entity.setRefDataValue(refDataValue);
+            }
+
+            refDataSpecValues.add(entity);
+        }
+        refDataSpecValueDAO.saveAll(refDataSpecValues);
+
+        logger.info("Row with languages added with rowId: {} for CodeList: {}", rowId, codeListId);
+    }
 }

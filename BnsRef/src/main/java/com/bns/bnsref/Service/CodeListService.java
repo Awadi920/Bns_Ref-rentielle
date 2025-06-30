@@ -20,4 +20,7 @@ public interface CodeListService {
 
     void addCodeListRow(CodeListRowDTO rowDTO); // Nouvelle méthode
     List<CodeListRowDTO> getCodeListRows(String codeListId); // Nouvelle méthode
+
+    void addCodeListRowWithLanguages(String codeListId, CodeListRowDTO rowDTO);
+
 }

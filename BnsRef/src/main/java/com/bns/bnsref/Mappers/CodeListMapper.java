@@ -15,6 +15,7 @@ public class CodeListMapper {
         return CodeList.builder()
                 .labelList(dto.getLabelList())
                 .description(dto.getDescription())
+                .translated(dto.isTranslated())
                 .domain(domain)
                 .category(category)
                 .producer(producer)
@@ -27,6 +28,7 @@ public class CodeListMapper {
                 .codeList(entity.getCodeList())
                 .labelList(entity.getLabelList())
                 .description(entity.getDescription())
+                .translated(entity.isTranslated()) // Ajout du champ translated
                 .creationDate(entity.getCreationDate())  // Assure-toi qu'on la récupère bien
                 .domainCode(entity.getDomain() != null ? entity.getDomain().getCodeDomain() : null)
                 .codeCategory(entity.getCategory() != null ? entity.getCategory().getCodeCategory() : null)

@@ -23,6 +23,9 @@ public class Ref_DataValue {
     @Column(name = "row_id")
     private String rowId; // Identifiant de la ligne pour regrouper les valeurs
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "code_langue")
+    private Language language; // Relation avec Language
 
     // relation *-->1 with Ref_Data bidirectional
     @ManyToOne(fetch = FetchType.LAZY)

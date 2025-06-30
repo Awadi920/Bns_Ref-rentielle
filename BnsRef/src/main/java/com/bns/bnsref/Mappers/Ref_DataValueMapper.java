@@ -1,5 +1,7 @@
 package com.bns.bnsref.Mappers;
 
+import com.bns.bnsref.Entity.Language;
+import com.bns.bnsref.dao.LanguageDAO;
 import com.bns.bnsref.dto.RefDataValueTranslationDTO;
 import com.bns.bnsref.dto.Ref_DataValueDTO;
 import com.bns.bnsref.Entity.Ref_DataValueTranslation;
@@ -13,18 +15,24 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class Ref_DataValueMapper {
+    private final LanguageDAO languageDAO;
 
     public Ref_DataValueDTO toDTO(Ref_DataValue entity) {
         if (entity == null) return null;
 
-        Ref_DataValueDTO dto = Ref_DataValueDTO.builder()
+        return Ref_DataValueDTO.builder()
                 .codeRefDataValue(entity.getCodeRefDataValue())
                 .value(entity.getValue())
                 .codeRefData(entity.getRefData() != null ? entity.getRefData().getCodeRefData() : null)
-                .rowId(entity.getRowId()) // Ajout
+                .languageCode(entity.getLanguage() != null ? entity.getLanguage().getCodeLanguage() : null) // Ajout
+                .rowId(entity.getRowId())
+                .parentValueCodes(entity.getParents().stream()
+                        .map(Ref_DataValue::getCodeRefDataValue)
+                        .collect(Collectors.toList()))
+                .childValueCodes(entity.getChildren().stream()
+                        .map(Ref_DataValue::getCodeRefDataValue)
+                        .collect(Collectors.toList()))
                 .build();
-
-        return dto;
     }
 
     public Ref_DataValueDTO toDTOWithAllTranslations(Ref_DataValue entity) {
@@ -47,7 +55,14 @@ public class Ref_DataValueMapper {
         Ref_DataValueDTO dto = new Ref_DataValueDTO();
         dto.setCodeRefDataValue(entity.getCodeRefDataValue());
         dto.setCodeRefData(entity.getRefData() != null ? entity.getRefData().getCodeRefData() : null);
-        dto.setRowId(entity.getRowId()); // Ajout
+        dto.setLanguageCode(entity.getLanguage() != null ? entity.getLanguage().getCodeLanguage() : null); // Ajout
+        dto.setRowId(entity.getRowId());
+        dto.setParentValueCodes(entity.getParents().stream()
+                .map(Ref_DataValue::getCodeRefDataValue)
+                .collect(Collectors.toList()));
+        dto.setChildValueCodes(entity.getChildren().stream()
+                .map(Ref_DataValue::getCodeRefDataValue)
+                .collect(Collectors.toList()));
 
         if (lang != null) {
             Ref_DataValueTranslation translation = entity.getTranslations().stream()
@@ -74,10 +89,19 @@ public class Ref_DataValueMapper {
     }
 
     public Ref_DataValue toEntity(Ref_DataValueDTO dto) {
+        if (dto == null) return null;
+
+        Language language = null;
+        if (dto.getLanguageCode() != null) {
+            language = languageDAO.findById(dto.getLanguageCode())
+                    .orElseThrow(() -> new RuntimeException("Langue non trouvée: " + dto.getLanguageCode()));
+        }
+
         return Ref_DataValue.builder()
                 .codeRefDataValue(dto.getCodeRefDataValue())
                 .value(dto.getValue())
-                .rowId(dto.getRowId()) // Ajout
+                .rowId(dto.getRowId())
+                .language(language)
                 .build();
     }
 }

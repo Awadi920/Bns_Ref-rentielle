@@ -145,4 +145,15 @@ public class CodeListController {
         return ResponseEntity.ok(codeListService.getCodeListRows(codeListId));
     }
 
+    @PostMapping("/{codeListId}/rows/languages")
+    public ResponseEntity<String> addCodeListRowWithLanguages(
+            @PathVariable String codeListId,
+            @RequestBody @Valid CodeListRowDTO rowDTO) {
+        try {
+            codeListService.addCodeListRowWithLanguages(codeListId, rowDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Row created successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

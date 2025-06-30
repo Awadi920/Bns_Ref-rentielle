@@ -21,6 +21,11 @@ public class Ref_DataSpecValue implements Serializable {
     @Column(name = "row_id")
     private String rowId; // Identifiant de la ligne pour regrouper les valeurs
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "code_langue")
+    private Language language; // Relation avec Language
+
+
     // relation with Ref_DataSpec *--> 1 bidirectional
     @ManyToOne(fetch = FetchType.LAZY)
     private Ref_DataSpec refDataSpec;

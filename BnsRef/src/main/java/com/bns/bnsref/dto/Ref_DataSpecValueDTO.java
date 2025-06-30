@@ -15,6 +15,8 @@ public class Ref_DataSpecValueDTO {
     private String codeRefDataSpec; // Stocke l'ID de Ref_DataSpec
     private String refDataValueCode; // Ajout pour lier à Ref_DataValue
 
+    private String languageCode;
+
     private String rowId; // Nouveau champ
 
 

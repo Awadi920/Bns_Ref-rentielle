@@ -22,6 +22,10 @@ public class CodeList implements Serializable {
     private String labelList;
     private String description;
 
+    // Nouveau champ boolean pour indiquer si la liste est traduisible
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean translated = false;
+
     //@Temporal(TemporalType.DATE)
     //@UpdateTimestamp
     private LocalDateTime creationDate;

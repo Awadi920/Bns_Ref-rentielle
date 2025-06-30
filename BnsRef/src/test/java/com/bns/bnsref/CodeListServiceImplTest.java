@@ -101,7 +101,7 @@ class CodeListServiceImplTest {
     @Test
     void addCodeList() {
         // Configurer les mocks
-        when(domainDAO.findById("DOM002")).thenReturn(Optional.of(domain));
+        when(domainDAO.findById("DOM001")).thenReturn(Optional.of(domain));
         when(categoryDAO.findById("CAT001")).thenReturn(Optional.of(category));
         when(producerDAO.findById("PROD001")).thenReturn(Optional.of(producer));
         when(codeListDAO.findLastCodeList()).thenReturn(Optional.of("CL000"));
